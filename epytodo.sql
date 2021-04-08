@@ -1,0 +1,22 @@
+CREATE DATABASE `epytodo`;
+USE `epytodo`
+
+CREATE TABLE `user` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `email` VARCHAR(255) NOT NULL UNIQUE,
+    `password` BINARY(16) NOT NULL COMMENT 'password hash',
+    `name` VARCHAR(255) NOT NULL,
+    `firstname` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE `todo` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL,
+    `description` TEXT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `due_time` DATETIME NOT NULL,
+    `status` ENUM('not started', 'todo', 'in progress', 'done') DEFAULT 'not started',
+    `user_id` BIGINT UNSIGNED NOT NULL
+        REFERENCES `user`(`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) DEFAULT CHARACTER SET utf8;
