@@ -1,0 +1,29 @@
+{
+  "name": "epytodo",
+  "version": "0.1.0",
+  "description": "A TODO app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EpitechIT2020/B-WEB-200-NAN-2-1-epytodo-alexandre.paradis.git"
+  },
+  "keywords": [
+    "Epitech"
+  ],
+  "contributors": [
+    "Yanis Guaye <yanis.guaye@epitech.eu",
+    "Alexandre Paradis <alexandre.paradis@epitech.eu>",
+    "Nassim Alaimi <nassim.alaimi@epitech.eu>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EpitechIT2020/B-WEB-200-NAN-2-1-epytodo-alexandre.paradis/issues"
+  },
+  "homepage": "https://github.com/EpitechIT2020/B-WEB-200-NAN-2-1-epytodo-alexandre.paradis#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
