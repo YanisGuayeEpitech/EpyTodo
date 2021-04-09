@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
             res.json({ token });
         }
     } catch (err) {
-        util.internalError('register', req, res, err.toString());
+        util.internalError('POST /register', req, res, err.toString());
     }
 });
 

@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     try {
         res.json(await query.getAll());
     } catch (err) {
-        util.internalError('user', req, res, err.toString());
+        util.internalError('GET /user', req, res, err.toString());
     }
 });
 
@@ -31,7 +31,7 @@ router.get('/:id', async (req, res, next) => {
         else
             res.status(404).json({ msg: "Not found" });
     } catch (err) {
-        util.internalError(`user/${id}`, req, res, err.toString());
+        util.internalError(`GET /user/${id}`, req, res, err.toString());
     }
 });
 
@@ -46,8 +46,25 @@ router.get('/:email', async (req, res) => {
         else
             res.status(404).json({ msg: "Not found" });
     } catch (err) {
-        util.internalError(`user/${email}`, req, res, err.toString());
+        util.internalError(`GET /user/${email}`, req, res, err.toString());
     }
 });
+
+router.delete('/:id', async (req, res) => {
+    const id = util.parseInt(req.params.id);
+
+    if (id == null) {
+        res.status(400).json({ msg: "Invalid id" });
+        return;
+    }
+    try {
+        if (await query.remove(id))
+            res.json({ msg: `succesfully deleted record number: ${id}` });
+        else
+            res.status(404).json({ msg: "Not found" });
+    } catch (err) {
+        util.internalError(`DELETE /user/${id}`, req, res, err.toString());
+    }
+})
 
 module.exports = router;

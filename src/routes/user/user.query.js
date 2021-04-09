@@ -73,4 +73,17 @@ async function getByEmail(email) {
     });
 }
 
-module.exports = { getAll, getById, getByEmail };
+/**
+ * @param {number} id The user's numerical id, must be an integer.
+ * @returns {boolean}
+ */
+async function remove(id) {
+    return await util.withConnection(async connection => {
+        const query = 'DELETE FROM `user` WHERE `id` = ?';
+        const [rows] = await connection.execute(query, [id]);
+
+        return rows.affectedRows > 0;
+    });
+}
+
+module.exports = { getAll, getById, getByEmail, remove };
