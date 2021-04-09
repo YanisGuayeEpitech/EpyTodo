@@ -55,4 +55,22 @@ async function getById(id) {
     });
 }
 
-module.exports = { getAll, getById };
+/**
+ * Gets an user by email.
+ * 
+ * @param {string} email The user's email.
+ * @returns {User?}
+ */
+async function getByEmail(email) {
+    return await util.withConnection(async connection => {
+        const query = 'SELECT * FROM `user` WHERE `email` = ?';
+        const [rows] = await connection.execute(query, [email]);
+
+        if (rows.length == 0)
+            return null;
+        const r = rows[0];
+        return new User(r.id, r.email, r.password, r.created_at, r.firstname, r.name);
+    });
+}
+
+module.exports = { getAll, getById, getByEmail };

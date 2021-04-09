@@ -10,7 +10,10 @@ const app = express();
 app.db = require('./config/db');
 
 // Parse requests as JSON
-app.use(express.json())
+app.use(express.json());
+
+// Parse URL-encoded URLs
+app.use(express.urlencoded());
 
 // Routes
 app.use('/register', require('./routes/register/register'));

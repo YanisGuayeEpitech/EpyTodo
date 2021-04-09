@@ -35,4 +35,19 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+router.get('/:email', async (req, res) => {
+    const email = req.params.email;
+
+    try {
+        let user = await query.getByEmail(email);
+
+        if (user)
+            res.json(user);
+        else
+            res.status(404).json({ msg: "Not found" });
+    } catch (err) {
+        util.internalError(`user/${email}`, req, res, err.toString());
+    }
+});
+
 module.exports = router;
