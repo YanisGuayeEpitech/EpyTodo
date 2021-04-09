@@ -12,15 +12,19 @@ const bcrypt = require('bcryptjs');
  */
 async function checkUser(email, password) {
     const connection = await db.getConnection();
-    const query = "SELECT `password` FROM `user` WHERE `email` = ?";
+    let exists;
 
     try {
-        let [rows] = await connection.execute(query, [email]);
+        exists = await (async () => {
+            const query = "SELECT `password` FROM `user` WHERE `email` = ?";
+            const [rows] = await connection.execute(query, [email]);
 
-        return rows.length && await bcrypt.compare(password, rows[0].password.toString());
-    } catch (err) {
-        throw err;
+            return rows.length > 0 && await bcrypt.compare(password, rows[0].password.toString());
+        })();
+    } finally {
+        connection.release();
     }
+    return exists;
 }
 
 module.exports = { checkUser };

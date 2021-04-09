@@ -20,6 +20,7 @@ app.use(express.json())
 // Routes
 app.use('/register', require('./routes/register/register'));
 app.use('/login', require('./routes/login/login'));
+app.use('/user', require('./routes/user/user'));
 
 const port = process.env.APP_PORT;
 app.listen(port, () => {

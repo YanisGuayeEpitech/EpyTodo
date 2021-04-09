@@ -12,21 +12,30 @@ const bcrypt = require('bcryptjs');
  *  @returns {boolean} true if the user was registered, false otherwise.
  */
 async function registerUser(email, name, firstName, password) {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
     const connection = await db.getConnection();
-    const query = 'INSERT `user` (`email`, `password`, `name`, `firstname`) VALUES (?, ?, ?, ?)';
+    let registered;
 
     try {
-        await connection.execute(query, [email, hashedPassword, name, firstName]);
-    } catch (err) {
-        // check for duplicate entry error
-        if (err.code == 'ER_DUP_ENTRY' || err.errno == 1062)
-            return false;
-        // if not, trigger an internal server error by rethrowing err
-        throw err;
+        registered = await (async () => {
+            const salt = await bcrypt.genSalt();
+            const hashedPassword = await bcrypt.hash(password, salt);
+            const query = 'INSERT `user` (`email`, `password`, `name`, `firstname`) VALUES (?, ?, ?, ?)';
+
+            try {
+                await connection.execute(query, [email, hashedPassword, name, firstName]);
+            } catch (err) {
+                // check for duplicate entry error
+                if (err.code == 'ER_DUP_ENTRY' || err.errno == 1062)
+                    return false;
+                // if not, trigger an internal server error by rethrowing err
+                throw err;
+            }
+            return true;
+        })();
+    } finally {
+        await connection.release();
     }
-    return true;
+    return registered;
 }
 
 module.exports = { registerUser };

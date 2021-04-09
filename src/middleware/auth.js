@@ -20,16 +20,16 @@ router.use(async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.SECRET);
 
         try {
-            if (query.checkUser(decoded.email, decoded.password)) {
+            if (await query.checkUser(decoded.email, decoded.password)) {
                 next();
                 return;
             }
         } catch (err) {
             req.app.error('auth', req, res, err.toString());
         }
-    } catch (err) {
+    } finally {
+        res.status(401).json({ msg: "Token is not valid" });
     }
-    res.status(401).json({ msg: "Token is not valid" });
 })
 
 module.exports = router;
