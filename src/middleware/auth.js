@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const parameters = require('../parameters');
 const jwt = require('jsonwebtoken');
 const query = require('../routes/login/login.query')
 const util = require('../util');
@@ -11,12 +10,17 @@ const router = express.Router();
 router.use(async (req, res, next) => {
     let token;
 
+    // parse the auth token
     try {
-        token = parameters.get(req.body, ['token']).token;
+        let header = req.header("Authorization");
+        const re = /^\s*(?:\w+\s+)?([^\s]+)\s*$/
+        token = header.match(re)[1];
     } catch (err) {
         res.status(401).json({ msg: "No token, authorization denied" });
         return;
     }
+
+    // check if the token is valid
     try {
         const decoded = jwt.verify(token, process.env.SECRET);
 
