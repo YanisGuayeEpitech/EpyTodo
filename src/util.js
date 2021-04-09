@@ -47,4 +47,18 @@ function internalError(path, req, res, err) {
     res.status(500).json({ msg: "internal server error" });
 };
 
-module.exports = { parseInt, withConnection, internalError };
+/**
+ * Returns defaultValue if value is null or undefined.
+ * 
+ * @template T
+ * @param {T} defaultValue
+ * @param {T} [value]
+ * @returns {T} defaultValue if value is null or undefined.
+ */
+function defaulted(defaultValue, value) {
+    if (value == undefined || value == null)
+        return defaultValue;
+    return value;
+}
+
+module.exports = { parseInt, withConnection, internalError, defaulted };

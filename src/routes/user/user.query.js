@@ -74,6 +74,41 @@ async function getByEmail(email) {
 }
 
 /**
+ * Updates an user's data.
+ * 
+ * @param {number} id The users's numerical id, must be an integer.
+ * @param {{[string]: string?}} data
+ * @returns {User?}
+ */
+async function update(id, data) {
+    return await util.withConnection(async connection => {
+        // get current user values
+        const user = await getById(id);
+        if (user === null)
+            return null;
+
+        // put all the values to update in an array
+        const strings = new Array(data.length);
+        const toUpdate = {};
+        let i = 0;
+
+        for (const key in data) {
+            toUpdate[key] = util.defaulted(user[key], data[key]);
+            strings[i++] = `\`${key}\` = ?`;
+        }
+
+        // perform update
+        const query = `UPDATE \`user\` SET ${strings.join(', ')} WHERE \`id\` = ?`;
+        await connection.execute(query, [...Object.values(toUpdate), id]);
+
+        // update and return user object
+        return Object.assign(user, toUpdate);
+    })
+}
+
+/**
+ * Removes an user by id.
+ * 
  * @param {number} id The user's numerical id, must be an integer.
  * @returns {boolean}
  */
@@ -86,4 +121,4 @@ async function remove(id) {
     });
 }
 
-module.exports = { getAll, getById, getByEmail, remove };
+module.exports = { getAll, getById, getByEmail, remove, update };

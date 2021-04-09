@@ -3,6 +3,7 @@
 const express = require('express');
 const query = require('./user.query');
 const util = require('../../util');
+const parameters = require('../../parameters');
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get('/:id', async (req, res, next) => {
         return;
     }
     try {
-        let user = await query.getById(id);
+        const user = await query.getById(id);
 
         if (user)
             res.json(user);
@@ -39,7 +40,7 @@ router.get('/:email', async (req, res) => {
     const email = req.params.email;
 
     try {
-        let user = await query.getByEmail(email);
+        const user = await query.getByEmail(email);
 
         if (user)
             res.json(user);
@@ -49,6 +50,26 @@ router.get('/:email', async (req, res) => {
         util.internalError(`GET /user/${email}`, req, res, err.toString());
     }
 });
+
+router.put('/:id', async (req, res) => {
+    const id = util.parseInt(req.params.id);
+
+    if (id == null) {
+        res.status(400).json({ msg: "Invalid id" });
+        return;
+    }
+    try {
+        const data = parameters.getOptional(req.body, ['email', 'name', 'firstname', 'password']);
+        const user = await query.update(id, data);
+
+        if (user)
+            res.json(user);
+        else
+            res.status(404).json({ msg: "Not found" });
+    } catch (err) {
+        util.internalError(`PUT /user/${id}`, req, res, err.toString());
+    }
+})
 
 router.delete('/:id', async (req, res) => {
     const id = util.parseInt(req.params.id);

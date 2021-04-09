@@ -12,11 +12,12 @@ const parameters = {
 }
 
 /**
- * @param {any} body The request's body.
+ * @template T
+ * @param {{[string]: T?}} body The request's body.
  * @param {[string]} keys
- * @returns {[string]}
+ * @returns {{[string]: T}}
  */
-function getParameters(body, keys) {
+function get(body, keys) {
     let values = {};
 
     for (let key of keys) {
@@ -31,4 +32,25 @@ function getParameters(body, keys) {
     return values;
 }
 
-module.exports.get = getParameters;
+/**
+ * @template T
+ * @param {{[string]: T?}} body The request's body.
+ * @param {[string]} keys
+ * @returns {{[string]: T?}}
+ */
+function getOptional(body, keys) {
+    let values = {};
+
+    for (let key of keys) {
+        let value = body[key];
+
+        if (value !== undefined && value !== null) {
+            if (parameters.hasOwnProperty(key))
+                value = parameters[key](value);
+            values[key] = value;
+        }
+    }
+    return values;
+}
+
+module.exports = { get, getOptional };
