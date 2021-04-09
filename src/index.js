@@ -17,12 +17,11 @@ app.error = function (path, req, res, msg) {
 // Parse requests as JSON
 app.use(express.json())
 
-// routers
-const registerRouter = require('./routes/register/register');
-
-app.use('/register', registerRouter);
+// Routes
+app.use('/register', require('./routes/register/register'));
+app.use('/login', require('./routes/login/login'));
 
 const port = process.env.APP_PORT;
 app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`);
+    console.log(`EpyTodo listening at http://localhost:${port}`);
 });

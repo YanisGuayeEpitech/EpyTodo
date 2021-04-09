@@ -2,7 +2,8 @@
 
 const express = require('express');
 const parameters = require('../../parameters');
-const query = require('./register.query');
+const query = require('./login.query');
+const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 const router = express.Router();
@@ -11,15 +12,15 @@ router.post('/', async (req, res) => {
     let params;
 
     try {
-        params = parameters.get(req.body, ['email', 'name', 'firstname', 'password']);
+        params = parameters.get(req.body, ['email', 'password']);
     } catch (msg) {
         res.status(400).json({ msg });
         return;
     }
 
     try {
-        if (!await query.registerUser(params.email, params.name, params.firstname, params.password)) {
-            res.status(400).json({ msg: "account already exists" });
+        if (!await query.checkUser(params.email, params.password)) {
+            res.status(400).json({ msg: "Invalid Credentials" });
         } else {
             const token = jwt.sign({ email: params.email, password: params.password }, process.env.SECRET);
 
