@@ -4,6 +4,7 @@ const express = require('express');
 const parameters = require('../../parameters');
 const query = require('./register.query');
 const jwt = require('jsonwebtoken');
+const util = require('../../util');
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ router.post('/', async (req, res) => {
             res.json({ token });
         }
     } catch (err) {
-        req.app.error('register', req, res, err.toString());
+        util.internalError('register', req, res, err.toString());
     }
 });
 

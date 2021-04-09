@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const parameters = require('../../parameters');
 const query = require('./user.query');
 const util = require('../../util');
 
@@ -13,7 +12,7 @@ router.get('/', async (req, res) => {
     try {
         res.json(await query.getAll());
     } catch (err) {
-        req.app.error('user', req, res, err.toString());
+        util.internalError('user', req, res, err.toString());
     }
 });
 
@@ -32,7 +31,7 @@ router.get('/:id', async (req, res, next) => {
         else
             res.status(404).json({ msg: "Not found" });
     } catch (err) {
-        req.app.error(`user/${id}`, req, res, err.toString());
+        util.internalError(`user/${id}`, req, res, err.toString());
     }
 });
 

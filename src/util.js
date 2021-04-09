@@ -34,4 +34,17 @@ async function withConnection(onConnect) {
     return result;
 }
 
-module.exports = { parseInt, withConnection };
+/**
+ * Reports an internal server error.
+ * 
+ * @param {string} path The route in which the error occured.
+ * @param {import('express').Request} req  The Request.
+ * @param {import('express').Response} res The Response.
+ * @param {any} err The error object.
+ */
+function internalError(path, req, res, err) {
+    console.error(`[ERROR] at '${path}' from '${req.ip}': ${err}`);
+    res.status(500).json({ msg: "internal server error" });
+};
+
+module.exports = { parseInt, withConnection, internalError };

@@ -9,11 +9,6 @@ const app = express();
 // Connect to database
 app.db = require('./config/db');
 
-app.error = function (path, req, res, msg) {
-    console.error(`[ERROR] at '${path}' from '${req.ip}': ${msg}`);
-    res.status(500).json({ msg: "internal server error" });
-};
-
 // Parse requests as JSON
 app.use(express.json())
 

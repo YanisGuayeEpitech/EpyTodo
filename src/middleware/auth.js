@@ -4,6 +4,7 @@ const express = require('express');
 const parameters = require('../parameters');
 const jwt = require('jsonwebtoken');
 const query = require('../routes/login/login.query')
+const util = require('../util');
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.use(async (req, res, next) => {
                 return;
             }
         } catch (err) {
-            req.app.error('auth', req, res, err.toString());
+            util.internalError('auth', req, res, err.toString());
         }
     } catch (_) {
     }
