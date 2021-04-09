@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('../../config/db');
+const util = require('../../util');
 const bcrypt = require('bcryptjs');
 
 /**
@@ -11,20 +11,12 @@ const bcrypt = require('bcryptjs');
  *  @returns {boolean} true if user and password exists in database.
  */
 async function checkUser(email, password) {
-    const connection = await db.getConnection();
-    let exists;
+    return await util.withConnection(async connection => {
+        const query = "SELECT `password` FROM `user` WHERE `email` = ?";
+        const [rows] = await connection.execute(query, [email]);
 
-    try {
-        exists = await (async () => {
-            const query = "SELECT `password` FROM `user` WHERE `email` = ?";
-            const [rows] = await connection.execute(query, [email]);
-
-            return rows.length > 0 && await bcrypt.compare(password, rows[0].password.toString());
-        })();
-    } finally {
-        connection.release();
-    }
-    return exists;
+        return rows.length > 0 && await bcrypt.compare(password, rows[0].password.toString());
+    });
 }
 
 module.exports = { checkUser };

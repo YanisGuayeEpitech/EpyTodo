@@ -27,9 +27,9 @@ router.use(async (req, res, next) => {
         } catch (err) {
             req.app.error('auth', req, res, err.toString());
         }
-    } finally {
-        res.status(401).json({ msg: "Token is not valid" });
+    } catch (_) {
     }
+    res.status(401).json({ msg: "Token is not valid" });
 })
 
 module.exports = router;

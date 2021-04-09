@@ -1,7 +1,6 @@
 'use strict';
 
-const db = require('../../config/db');
-const bcrypt = require('bcryptjs');
+const util = require('../../util');
 
 /**
  * @constructor
@@ -22,28 +21,38 @@ function User(id, email, password, created_at, firstname, name) {
 }
 
 /**
+ * Fetches all the registered users.
+ * 
  * @returns {[User]}
  */
-async function getAllUsers() {
-    const connection = await db.getConnection();
-    let users;
+async function getAll() {
+    return await util.withConnection(async connection => {
+        const query = 'SELECT * FROM `user`';
+        const [rows] = await connection.execute(query);
+        const users = new Array(rows.length);
 
-    try {
-        users = await (async () => {
-            const query = 'SELECT * FROM `user`';
-            const [rows] = await connection.execute(query);
-            const users = new Array(rows.length);
-
-            for (const [i, r] of Object.entries(rows))
-                users[i] = new User(r.id, r.email, r.password, r.created_at, r.firstname, r.name);
-            return users;
-        })();
-    } finally {
-        connection.release();
-    }
-    return users;
+        for (const [i, r] of Object.entries(rows))
+            users[i] = new User(r.id, r.email, r.password, r.created_at, r.firstname, r.name);
+        return users;
+    });
 }
 
-module.exports = {
-    getAllUsers
-};
+/**
+ * Gets an user by id.
+ * 
+ * @param {number} id The user's numerical id, must be an integer.
+ * @returns {User?}
+ */
+async function getById(id) {
+    return await util.withConnection(async connection => {
+        const query = 'SELECT * FROM `user` WHERE `id` = ?';
+        const [rows] = await connection.execute(query, [id.toString()]);
+
+        if (rows.length == 0)
+            return null;
+        const r = rows[0];
+        return new User(r.id, r.email, r.password, r.created_at, r.firstname, r.name);
+    });
+}
+
+module.exports = { getAll, getById };
