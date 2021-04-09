@@ -4,6 +4,7 @@ const express = require('express');
 const parameters = require('../../parameters');
 const query = require('./register.query');
 const bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -23,7 +24,9 @@ router.post('/', async (req, res) => {
         if (!await query.registerUser(params.email, params.name, params.firstname, hashedPassword)) {
             res.status(400).json({ msg: "account already exists" });
         } else {
-            res.json({ token: "TODO" });
+            const token = jwt.sign({ password: hashedPassword }, process.env.SECRET);
+
+            res.json({ token });
         }
     } catch (err) {
         req.app.error('register', req, res, err.toString());
