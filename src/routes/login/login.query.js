@@ -15,13 +15,12 @@ async function checkUser(email, password) {
     const query = "SELECT `password` FROM `user` WHERE `email` = ?";
 
     try {
-        let [rows, fields] = await connection.execute(query, [email]);
+        let [rows] = await connection.execute(query, [email]);
 
         return rows.length && await bcrypt.compare(password, rows[0].password.toString());
     } catch (err) {
         throw err;
     }
-    return true;
 }
 
 module.exports = { checkUser };

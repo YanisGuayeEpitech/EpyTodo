@@ -3,7 +3,7 @@
 const express = require('express');
 const parameters = require('../../parameters');
 const query = require('./register.query');
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 

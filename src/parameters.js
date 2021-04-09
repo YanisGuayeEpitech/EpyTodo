@@ -31,4 +31,4 @@ function getParameters(body, keys) {
     return values;
 }
 
-module.exports = { get: getParameters };
+module.exports.get = getParameters;

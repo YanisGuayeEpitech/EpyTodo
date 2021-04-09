@@ -3,8 +3,7 @@
 const express = require('express');
 const parameters = require('../../parameters');
 const query = require('./login.query');
-const bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -27,7 +26,7 @@ router.post('/', async (req, res) => {
             res.json({ token });
         }
     } catch (err) {
-        req.app.error('register', req, res, err.toString());
+        req.app.error('login', req, res, err.toString());
     }
 });
 
