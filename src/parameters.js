@@ -11,23 +11,24 @@ const parameters = {
     }
 }
 
-function getParameters(body) {
-    return new Proxy(parameters, {
-        get: (target, param, receiver) => {
-            let value = body[param];
+/**
+ * @param {any} body The request's body.
+ * @param {[string]} keys
+ * @returns {[string]}
+ */
+function getParameters(body, keys) {
+    let values = {};
 
-            if (value === undefined || value === null)
-                throw `missing parameter ${param}`;
-            if (target.hasOwnProperty(param))
-                value = target[param](value);
-            return value;
-        }
-    });
+    for (let key of keys) {
+        let value = body[key];
+
+        if (value === undefined || value === null)
+            throw `missing parameter '${key}'`;
+        if (parameters.hasOwnProperty(key))
+            value = parameters[key](value);
+        values[key] = value;
+    }
+    return values;
 }
 
-module.exports = {
-    /**
-     * @param body The request's body.
-     */
-    get: getParameters,
-};
+module.exports = { get: getParameters };
