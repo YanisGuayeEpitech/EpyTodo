@@ -17,6 +17,19 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/todos', async (req, res) => {
+    try {
+        const user = await query.getByEmail(res.locals.email);
+
+        if (user)
+            res.json(await query.getTodos(user.id));
+        else
+            res.status(404).json({ msg: "Not found" });
+    } catch (err) {
+        util.internalError(`DELETE /user/todos`, req, res, err.toString());
+    }
+})
+
 router.get('/:id', async (req, res, next) => {
     const id = util.parseInt(req.params.id);
 
@@ -69,7 +82,7 @@ router.put('/:id', async (req, res) => {
     } catch (err) {
         util.internalError(`PUT /user/${id}`, req, res, err.toString());
     }
-})
+});
 
 router.delete('/:id', async (req, res) => {
     const id = util.parseInt(req.params.id);
@@ -86,6 +99,6 @@ router.delete('/:id', async (req, res) => {
     } catch (err) {
         util.internalError(`DELETE /user/${id}`, req, res, err.toString());
     }
-})
+});
 
 module.exports = router;

@@ -121,4 +121,6 @@ async function remove(id) {
     });
 }
 
-module.exports = { getAll, getById, getByEmail, remove, update };
+const getTodos = require('../todo/todo.query').getFromUser;
+
+module.exports = { getAll, getById, getByEmail, remove, update, getTodos };

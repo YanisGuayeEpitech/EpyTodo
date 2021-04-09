@@ -137,4 +137,26 @@ async function remove(id) {
     });
 }
 
-module.exports = { getAll, getById, add, update, remove };
+/**
+ * Fetches all the todos associated with the given user id.
+ * 
+ * @param {number} user_id The user's numerical id, must be an integer.
+ * @returns {[Todo]} The todo-list.
+ */
+async function getFromUser(user_id) {
+    return await util.withConnection(async connection => {
+        const query = 'SELECT \
+            `todo`.`id`, `todo`.`title`, `todo`.`description`, `todo`.`due_time`, `todo`.`user_id`, `todo`.`status`\
+            FROM `todo`\
+            INNER JOIN `user`\
+            ON `todo`.`user_id` = ? AND`todo`.`user_id` = `user`.`id`';
+        const [rows] = await connection.execute(query, [user_id]);
+        const todos = new Array(rows.length);
+
+        for (const [i, r] of Object.entries(rows))
+            todos[i] = new Todo(r.id, r.title, r.description, r.created_at, r.due_time, r.user_id, r.status);
+        return todos;
+    });
+}
+
+module.exports = { getAll, getById, add, update, remove, getFromUser };

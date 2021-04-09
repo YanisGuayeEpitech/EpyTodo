@@ -26,6 +26,8 @@ router.use(async (req, res, next) => {
 
         try {
             if (await query.checkUser(decoded.email, decoded.password)) {
+                res.locals.email = decoded.email;
+                res.locals.password = decoded.password;
                 next();
                 return;
             }
