@@ -1,6 +1,6 @@
 'use strict';
 
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
@@ -10,19 +10,6 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
-}).promise();
+});
 
-/** Registers a user to the database
- * 
- *  @param {string} email
- *  @param {string} mail
- *  @param {string} firstName
- *  @param {string} password
- */
-async function registerUser(email, name, firstName, password) {
-    await pool.execute('INSERT `user` (`email`, `password`, `name`, `firstname`) VALUES (?, ?, ?, ?)', [email, password, name, firstName]);
-}
-
-module.exports = {
-    registerUser
-};
+module.exports = pool;

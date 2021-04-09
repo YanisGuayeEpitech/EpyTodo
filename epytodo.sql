@@ -4,7 +4,7 @@ USE `epytodo`
 CREATE TABLE `user` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `email` VARCHAR(255) NOT NULL UNIQUE,
-    `password` BINARY(16) NOT NULL COMMENT 'password hash',
+    `password` BINARY(60) NOT NULL COMMENT 'password hash',
     `name` VARCHAR(255) NOT NULL,
     `firstname` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP

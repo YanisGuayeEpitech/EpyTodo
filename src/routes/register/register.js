@@ -2,17 +2,18 @@
 
 const express = require('express');
 const parameters = require('../../parameters');
-const db = require('../../config/db')
+const query = require('./register.query');
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        let params = parameters.get(req.body);
+        const params = parameters.get(req.body);
+        const hashedPassword = await bcrypt.hash(params.password, 0);
 
-        db.registerUser(params.email, params.name, params.firstname, params.password)
-            .then(() => res.json({ token: "TODO" }))
-            .catch((msg) => req.app.error('register', req, res, msg));
+        await query.registerUser(params.email, params.name, params.firstname, hashedPassword);
+        res.json({ token: "TODO" });
     } catch (msg) {
         req.app.error('register', req, res, msg);
     }
